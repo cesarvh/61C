@@ -1,0 +1,38 @@
+1. Run your code for both SimplePageRank and BackedgesPageRank for 20 iterations on both Facebook dataset and the Enron dataset, parititioned into chunks of 500, on clusters of size 5 and 10. How long do each of these 8 scenarios take?
+    - SimplePageRank, FB, 5: 28.48 min
+    - SimplePageRank, FB, 10: 12.56 min
+    - SimplePageRank, Enron, 5: 33.10 min
+    - SimplePageRank, Enron, 10: 12.68 min
+    - BackedgesPageRank, FB, 5: 29.65 min
+    - BackedgesPageRank, FB, 10: 21.03 min
+    - BackedgesPageRank, Enron, 5: 32.47 min
+    - BackedgesPageRank, Enron, 10: 12.77 min
+
+2. When running SimplePageRank on the 10 instances with a repartition count of 500, what was the ratio of size of the input file to the runtime of your program for the Enron dataset? How about the Facebook dataset? Does this match your expectations?
+	- 4049333 bytes/12.68 min = 319348.028 bytes/min for the Enron dataset
+	- 854362 bytes/12.56 min = 68022.452 bytes/min for the Facebook dataset.
+	- No, this does not match my expectations because the Enron dataset is bigger than the Facebook dataset but takes less time to run SimplePageRank on.
+	- One reason might be that Facebook nodes have more connections. The distribute_weights function in SimplePageRank distributes weights to the node and all of its targets. If the number of targets is very large, it will take a long time to distribute all the weights. Therefore, the nodes of the Facebook dataset have more targets, which is why Facebook takes longer to run than the Enron dataset.
+	- My other data supports this hypothesis. The runtime difference between the Backedges PageRank and the Simple PageRank for the Facebook Dataset is 8.47 min, versus Enron's, which is 0.09 min. Because Facebook has more targets, each node can go back to more places. So it will take longer to compute each score.
+
+3. What was the speedup for 10 instances relative to 5 instances for 20 iterations of BackedgesPageRank on the Enron dataset with a repartition count of 500? What do you conclude about how well Spark parallelizes your work? How does the algorithm scale in regards to strong scaling? weak scaling?
+ 	-10 instances for 20 iterations of BackedgesPageRank on the Enron dataset with repartition of 500 takes 12.77 min
+ 	-5 instances for 20 iterations of BackedgesPageRank on the Enron dataset with repartition of 500 takes 32.47 min
+ 	-Speedup for 10 instances relative to 5 instances is 32.47/12.77 = 2.542678
+ 	-Spark parallelizes work well because it scales linearly in regards to both strong and weak scaling. But for weak scaling, the comparison between the Facebook and the Enron dataset might not be a good one because the speedup might not be caused by the number of processors, but by their differences. 
+ 	-The algorithm scales in regards to strong scaling because 2 times the number of processors led to more than 2 times speedup. 
+ 	-The algorithm scales in regards to weak scaling. The Enron dataset is 2x as large as the Facebook dataset. When we have 5 processors with Facebook and 10 processors with Enron, the runtime is 28 minutes for the Facebook dataset and 12 minutes for the Enron dataset. The runtime stays at least the same (actually gets better) if you increase both the problem size and the number of processors by the same factor, so the algorithm also scales in regards to weak scaling.
+
+4. In part 5, you tinkered with the repartition count. At what repartition count was your code the fastest on average? Why do you think it would go slower if you decreased the partition count? Why do you think it would go slower if you increased the partition count?
+	- The fastest partition count was 20. Each task took about 1 second or less! 
+	-I think it would be slower if the count was decreased because smaller partition counts means that you can run less in parallel. If you have more slaves than partitions, some slaves will just be idle.
+	-I think it would be slower if it was increased because higher partitions cause huge network overhead-- it takes a lot more time in total for slaves to transfer data from all the additional partitions.
+
+5. How many dollars in EC2 credits did you use to complete this project? Remember the price of single c1.medium machine is $0.0161 per Hour, and a cluster with 10 slaves has 11 machines (the master counts as one).
+	- Total cost = cost of 5 instances + cost of 10 instances + cost of mess up
+	- Cost of 5 instances = (28.48 min + 29.65 min + 33.10 min + 32.47 min) * $0.0161/Hour-instance * 6 instances * 1 hour/60 min = $0.199
+	- Cost of 10 instances = (13.45 + 13.22 + 3.70 + 3.95 + 4.57 + 4.68 + 1.85 + 1.95 + 1.60 + 1.64 + 0.88 + 0.91 + 0.67 + 0.72 + 0.50 + 0.68 + 1.37 + 1.36 + 1.31 + 1.35 + 12.56 + 21.03 + 12.68 + 12.77)min * $0.0161/Hour-instance * 11 instances * 1 hour/60 min = $0.352
+	- $0.0161 * 1.5 hours messed up * 11 = $0.266
+	- total = $0.199 + $0.352 + $0.266 = $0.817
+
+

@@ -1,0 +1,4 @@
+function mars () {
+  java -jar mars.jar $@
+}
+mars nc sm linker-src/linker.s pa $@
