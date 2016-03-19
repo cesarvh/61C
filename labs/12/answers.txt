@@ -1,0 +1,17 @@
+1: Hits and misses
+	- There were 4 TLB hits and 6 misses
+	- There were 6 Page hits and 6 Page Faults
+	- Steps:
+		1. Get the Page and Offset bits
+		2. Go to the TLB and check for that entry
+		3. If we don't find the entry, it causes a TLB Miss
+		4. Go to the page table and check if valid bit is 0 or 1, then proceed accordingly
+		5. Update TLB
+2: The following string causes such misses:
+	0F, F2, 44, 85, 73, A8, 3A, C4, 0F, F2
+	In order to make this work, we want to make sure the page number bits are different. The last 2 work because they have been deleted away
+3: Single parameter change
+	- We can increase the size of the page table so more pages fit. By doing this, we get rid of the replacemenets that can happen. This gets rid of PFs because even if there is TBL miss, that item will still be in memory which will not cause of a PF.
+	- 
+4: VSIM:
+	- P1-4 are all different processes that switch constantly. After each program runs, it updates the TLB, which causes the data in other processes to go away. This will result in a higher amount of TLB misses. 

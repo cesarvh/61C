@@ -1,0 +1,5 @@
+1. Four floating point divisions in single precision: _mm_div_ps(__m128 a, __m128, b)
+2. Sixteen max operations over signed 8-bit integers: _mm_max_epi16(__m128i a, __m128i b)
+3. SRA of eight signed 16 bit integers: _mm_sra_epi16(__m128i a, __im128i count)
+
+

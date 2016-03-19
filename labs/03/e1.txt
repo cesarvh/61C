@@ -1,0 +1,10 @@
+1. data: items stored in the data segment at the next address (PC)
+   word: declares a new 32 bit word 
+   text: instructions stored at the next availiable address 
+2. You click the checkmark next to it. Adress is 0x00004020. 
+3. You click "go" under run and to step, you do "step" under run
+4. 32. This is the 9th fibbonacci number.
+5. $t3 because it loads the address of n. 0x10010010 is the address
+6. 233 by editing $t3 after n is loaded into $t3
+7. You can modify the contens of a register by using the "registers" tab on the RHS
+8. sets $v0 to 1 and $v1 to 10 
